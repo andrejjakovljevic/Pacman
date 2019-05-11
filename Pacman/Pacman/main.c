@@ -39,7 +39,7 @@ int main()
 		//change_paccy_direction(g, c);
 		paccy_dots(g);
 		paccy_power_ups(g);
-		paccy_ghost(g);
+		paccy_ghost(g); //ovo je komentar
 		move_paccy(g);
 		print_game(g);
 		Sleep(100);
