@@ -1,8 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 #include<string.h>
+#include<conio.h>
 
 #include "structs.h"
+#include "key_press.h"
 
 maze* gen_maze(int lvl, int width, int height)
 {
@@ -65,8 +67,23 @@ maze* gen_maze(int lvl, int width, int height)
 	}
 }
 
+void print_with_spaces(char* c, int x, int y, HANDLE h)
+{
+	write_symbol(h, x, y, " ");
+	write_symbol(h, x + 1, y, c);
+	write_symbol(h, x + 2, y, " ");
+}
+
 void print_game(game* g)
 {
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hStdOut == INVALID_HANDLE_VALUE)
+	{
+		printf("Invalid handle");
+		return;
+	}
+	int x = 0;
+	int y = 0;
 	for (int i = 0; i < g->m->height; i++)
 	{
 		for (int j = 0; j < g->m->width; j++)
@@ -74,16 +91,19 @@ void print_game(game* g)
 			int t = 0;
 			for (int k = 0; k < 4; k++)
 			{
-				if (g->ghosts[k].x == i && g->ghosts[k].y == j) t = 1;
+				if (g->ghosts[k].x == i && g->ghosts[k].y == j && g->ghosts[k].dead==0) t = 1;
 			}
-			if (g->m->passable[i][j] == 0) printf(" x ");
-			else if (g->p->x == i && g->p->y == j) printf(" c ");
-			else if (t) printf(" g ");
-			else if (g->m->powerups[i][j] == 1) printf(" p ");
-			else if (g->m->dots[i][j] == 1) printf(" . ");
-			else printf("   ");
+			if (g->m->passable[i][j] == 0) print_with_spaces("x", x, y, hStdOut);
+			else if (g->p->x == i && g->p->y == j) print_with_spaces("c", x, y, hStdOut);
+			else if (t) print_with_spaces("g", x, y, hStdOut);
+			else if (g->m->powerups[i][j] == 1) print_with_spaces("p", x, y, hStdOut);
+			else if (g->m->dots[i][j] == 1) print_with_spaces(".", x, y, hStdOut);
+			else print_with_spaces(" ", x, y, hStdOut);
+			x += 3;
 		}
-		printf("\n");
+		//printf("\n");
+		x = 0;
+		y++;
 	}
 }
 
@@ -120,6 +140,7 @@ ghost* gen_ghosts(int* xs, int* ys)
 game* gen_game(int lvl, int width, int height)
 {
 	game* g = malloc(sizeof(g));
+	g->lvl = 1;
 	g->m = gen_maze(lvl, width, height);
 	g->p = gen_paccy(20, 13);
 	int xs[] = { 16,16,16,16 };
@@ -133,4 +154,29 @@ game* gen_game(int lvl, int width, int height)
 void end_game(game* g)
 {
 	g->game_end = 1;
+}
+
+void next_lvl(game* g)
+{
+	int t = 0;
+	for (int i = 0; i < g->m->height; i++)
+	{
+		for (int j = 0; j < g->m->width; j++)
+		{
+			if (g->m->dots[i][j] == 1) t = 1;
+		}
+	}
+	if (t == 0)
+	{
+		g->lvl++;
+		if (g->lvl == 10) end_game(g);
+		Sleep(1000);
+		g->m = gen_maze(g->lvl, g->m->width, g->m->height);
+		g->p = gen_paccy(20, 13);
+	}
+}
+
+void finish_game(game* g)
+{
+	//UPISATI HIGHSCORE ITD!
 }

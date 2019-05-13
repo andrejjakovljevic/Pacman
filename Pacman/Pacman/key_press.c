@@ -66,3 +66,12 @@ void write_symbol_in_color(HANDLE h, SHORT x, SHORT y, const char* symbol, WORD 
 	WriteConsoleOutputCharacterA(h, symbol, 1, here, &written);
 }
 
+void write_symbol(HANDLE h, SHORT x, SHORT y, const char* symbol)
+{
+	COORD here;
+	here.X = x;
+	here.Y = y;
+	DWORD written;
+	WriteConsoleOutputCharacter(h, symbol, 1, here, &written);
+}
+

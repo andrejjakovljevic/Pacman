@@ -6,6 +6,7 @@
 #include "key_press.h"
 #include "structs.h"
 #include "moving.h"
+#define SPEED 250
 
 
 int main()
@@ -26,11 +27,6 @@ int main()
 	game* g =gen_game(1, 28, 36);//28,36
 	while (1)
 	{
-		HANDLE hStdout;
-
-		hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
-		cls(hStdout);
 		if (_kbhit())
 		{
 			change_paccy_direction(g, _getch());
@@ -39,10 +35,13 @@ int main()
 		//change_paccy_direction(g, c);
 		paccy_dots(g);
 		paccy_power_ups(g);
-		paccy_ghost(g); //ovo je komentar
+		paccy_ghost(g);
+		if (g->game_end == 1) finish_game(g);
 		move_paccy(g);
+		next_lvl(g);
 		print_game(g);
-		Sleep(100);
+		pass_time(g);
+		Sleep(SPEED - (g->lvl) * 25);
 	}
 	system("PAUSE");
 }

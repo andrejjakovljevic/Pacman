@@ -44,23 +44,16 @@ void move_paccy(game* g) //1 - dole; 2-desno; 3-gore; 4-levo
 
 void change_paccy_direction(game* g, char c) //1 - dole; 2-desno; 3-gore; 4-levo
 {
-	if (g->p->moving_direction == 0)
-	{
-		if (c == 'w') g->p->moving_direction = 3;
-		else if (c == 's') g->p->moving_direction = 1;
-		else if (c == 'd') g->p->moving_direction = 2;
-		else if (c == 'a') g->p->moving_direction = 4;
-	}
-	else if (g->p->moving_direction == 1 || g->p->moving_direction==3)
-	{
-		if (c == 'd') g->p->moving_direction = 2;
-		else if (c == 'a') g->p->moving_direction = 4;
-	}
-	else if (g->p->moving_direction == 2 || g->p->moving_direction == 4)
-	{
-		if (c == 'w') g->p->moving_direction = 3;
-		if (c == 's') g->p->moving_direction = 1;
-	}
+	int pom1 = (g->p->x + 1) % (g->m->height);
+	int pom2 = (g->p->y + 1) % (g->m->width);
+	int pom3 = g->p->x - 1;
+	if (pom3 < 0) pom3 += g->m->height;
+	int pom4 = g->p->y - 1;
+	if (pom4 < 0) pom4 += g->m->width;
+	if (c == 'w' && g->m->passable[pom3][g->p->y] == 1) g->p->moving_direction = 3;
+	else if (c == 's' && g->m->passable[pom1][g->p->y] == 1) g->p->moving_direction = 1;
+	else if (c == 'd' && g->m->passable[g->p->x][pom2] == 1) g->p->moving_direction = 2;
+	else if (c == 'a' && g->m->passable[g->p->x][pom4] == 1) g->p->moving_direction = 4;
 }
 
 void paccy_dots(game* g)
@@ -77,7 +70,7 @@ void paccy_power_ups(game* g)
 	if (g->m->powerups[g->p->x][g->p->y] == 1)
 	{
 		g->m->powerups[g->p->x][g->p->y] = 0;
-		g->p->powered_up = 1;
+		g->p->powered_up = 50;
 		g->score += 5;
 	}
 }
@@ -104,5 +97,14 @@ void paccy_ghost(game* g)
 			g->lives -= 1;
 			if (g->lives == 0) end_game(g);
 		}
+	}
+}
+
+void pass_time(game* g)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (g->ghosts[i].dead > 0) g->ghosts[i].dead--;
+		if (g->p->powered_up > 0) g->p->powered_up--;
 	}
 }

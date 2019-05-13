@@ -8,5 +8,6 @@
 
 void cls(HANDLE hConsole);
 void write_symbol_in_color(HANDLE h, SHORT x, SHORT y, const char* symbol, WORD color);
+void write_symbol(HANDLE h, SHORT x, SHORT y, const char* symbol);
 
 #endif
