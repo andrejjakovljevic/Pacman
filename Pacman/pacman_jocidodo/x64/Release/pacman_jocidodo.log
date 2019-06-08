@@ -1,0 +1,18 @@
+﻿  continue_game.c
+  ispis_menu.c
+  key_press.c
+  main.c
+  moving.c
+  new_game.c
+  options.c
+  print_highscores.c
+d:\pacman\pacman_jocidodo\pacman_jocidodo\pacman_jocidodo\print_highscores.c(11): warning C4101: 'c': unreferenced local variable
+  structs.c
+d:\pacman\pacman_jocidodo\pacman_jocidodo\pacman_jocidodo\structs.c(1): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  d:\pacman\pacman_jocidodo\pacman_jocidodo\pacman_jocidodo\structs.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
+  Generating code
+d:\pacman\pacman_jocidodo\pacman_jocidodo\pacman_jocidodo\structs.c(288): warning C4715: 'get_scores': not all control paths return a value
+d:\pacman\pacman_jocidodo\pacman_jocidodo\pacman_jocidodo\structs.c(76): warning C4715: 'gen_maze': not all control paths return a value
+  All 43 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  pacman_jocidodo.vcxproj -> D:\Pacman\pacman_jocidodo\pacman_jocidodo\x64\Release\pacman_jocidodo.exe

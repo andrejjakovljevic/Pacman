@@ -1,8 +1,0 @@
-﻿  structs.c
-  Generating code
-d:\pacman\pacman\pacman\structs.c(206): warning C4715: 'get_scores': not all control paths return a value
-  3 of 15 functions (20.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
-  Pacman.vcxproj -> D:\Pacman\Pacman\x64\Release\Pacman.exe

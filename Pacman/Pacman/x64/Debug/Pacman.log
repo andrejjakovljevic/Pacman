@@ -1,4 +1,0 @@
-﻿  structs.c
-d:\pacman\pacman\pacman\structs.c(68): warning C4715: 'gen_maze': not all control paths return a value
-d:\pacman\pacman\pacman\structs.c(206): warning C4715: 'get_scores': not all control paths return a value
-  Pacman.vcxproj -> D:\Pacman\Pacman\x64\Debug\Pacman.exe
