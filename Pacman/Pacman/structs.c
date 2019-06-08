@@ -6,10 +6,40 @@
 #include "structs.h"
 #include "key_press.h"
 
+void arrow_down(main_menu* m)
+{
+	if (m->indentifier < 4) m->indentifier++;
+}
+
+void arrow_up(main_menu* m)
+{
+	if (m->indentifier > 1) m->indentifier--;
+}
+
+char* get_str(main_menu* m)
+{
+	char* s = malloc(9 * sizeof(char));
+	s[0] = 'm';
+	s[1] = 'a';
+	s[2] = 'i';
+	s[3] = 'n';
+	s[4] = 'm';
+	s[5] = 'e';
+	s[6] = 'n';
+	s[7] = 'u';
+	if (m->indentifier == 1) s[8] = '1';
+	if (m->indentifier == 2) s[8] = '2';
+	if (m->indentifier == 3) s[8] = '3';
+	if (m->indentifier == 4) s[8] = '4';
+}
+
+void print_mm(main_menu* m);
+void do_things(main_menu* m);
+
 maze* gen_maze(int lvl, int width, int height)
 {
-	FILE *fp;
-	fp = fopen("maze.txt", "r");
+	FILE *fp = NULL;
+	fp = fopen("D:/Pacman/Pacman/Pacman/maze.txt", "r");
 	if (fp == NULL)
 	{
 		perror("There was an error! Please restart the game.");
@@ -83,7 +113,7 @@ void print_game(game* g)
 		return;
 	}
 	int x = 0;
-	int y = 0;
+	int y = 1;
 	for (int i = 0; i < g->m->height; i++)
 	{
 		for (int j = 0; j < g->m->width; j++)
@@ -105,6 +135,8 @@ void print_game(game* g)
 		x = 0;
 		y++;
 	}
+	printf("%d ", g->time);
+
 }
 
 paccy* gen_paccy(int x, int y)
@@ -139,7 +171,7 @@ ghost* gen_ghosts(int* xs, int* ys)
 
 game* gen_game(int lvl, int width, int height)
 {
-	game* g = malloc(sizeof(g));
+	game* g = malloc(sizeof(game));
 	g->lvl = 1;
 	g->m = gen_maze(lvl, width, height);
 	g->p = gen_paccy(20, 13);
@@ -148,6 +180,8 @@ game* gen_game(int lvl, int width, int height)
 	g->ghosts = gen_ghosts(xs, ys);
 	g->score = 0;
 	g->game_end = 0;
+	g->lives = 3;
+	g->time = 0;
 	return g;
 }
 
@@ -176,7 +210,100 @@ void next_lvl(game* g)
 	}
 }
 
+score* get_scores()
+{
+	FILE *fs;
+	fs = fopen("D:/Pacman/Pacman/Pacman/scores.txt", "r");
+	if (fs == NULL)
+	{
+		perror("There was an error! Please restart the game.");
+	}
+	else
+	{
+		int n;
+		fscanf(fs, "%d", &n);
+		score* scores = malloc(10 * sizeof(score));
+		for (int i = 0; i < n; i++)
+		{
+			scores[i].ime = malloc(15 * sizeof(char));
+			fscanf(fs, "%s", scores[i].ime);
+			fscanf(fs, "%d", &scores[i].score);
+		}
+		for (int i = n; i < 10; i++)
+		{
+			scores[i].ime = malloc(15 * sizeof(char));
+			scores[i].ime = NULL;
+			scores[i].score = 0;
+		}
+		fclose(fs);
+		return scores;
+	}
+}
+
+void kill_game(game* g)
+{
+	for (int i = 0; i < g->m->height; i++)
+	{
+		free(g->m->passable[i]);
+		free(g->m->powerups[i]);
+		free(g->m->dots[i]);
+	}
+	free(g->m->passable);
+	free(g->m->powerups);
+	free(g->m->dots);
+	free(g->p);
+	free(g);
+}
+
 void finish_game(game* g)
 {
 	//UPISATI HIGHSCORE ITD!
+	score* scores = NULL;
+	scores = get_scores();
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hStdOut == INVALID_HANDLE_VALUE)
+	{
+		printf("Invalid handle");
+		return;
+	}
+	cls(hStdOut);
+	int t = 0;
+	for (int i = 0; i < 10; i++)
+	{
+		if (g->score > scores[i].score) t = 1;
+	}
+	if (t)
+	{
+		scores[9].ime = malloc(15 * sizeof(char));
+		printf("Enter name here:\n");
+		scanf("%s", scores[9].ime);
+		scores[9].score = g->score;
+		for (int i = 0; i < 10; i++)
+		{
+			for (int j = i; j < 10; j++)
+			{
+				if (scores[i].score < scores[j].score)
+				{
+					score t = scores[i];
+					scores[i] = scores[j];
+					scores[j] = t;
+				}
+			}
+		}
+	}
+	FILE *fs;
+	fs = fopen("D:/Pacman/Pacman/Pacman/scores.txt", "w");
+	int n = 0;
+	for (int i = 0; i < 10; i++)
+	{
+		if (scores[i].ime != NULL) n++;
+	}
+	fprintf(fs, "%d\n", n);
+	for (int i = 0; i < n; i++)
+	{
+		fprintf(fs, "%s\n", scores[i].ime);
+		fprintf(fs, "%d\n", scores[i].score);
+	}
+	fclose(fs);
+	kill_game(g);
 }

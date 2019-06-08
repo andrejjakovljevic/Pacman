@@ -36,12 +36,17 @@ int main()
 		paccy_dots(g);
 		paccy_power_ups(g);
 		paccy_ghost(g);
-		if (g->game_end == 1) finish_game(g);
+		if (g->game_end == 1)
+		{
+			finish_game(g);
+			break;
+		}
 		move_paccy(g);
 		next_lvl(g);
 		print_game(g);
 		pass_time(g);
 		Sleep(SPEED - (g->lvl) * 25);
 	}
+	finish_game(g);
 	system("PAUSE");
 }

@@ -70,7 +70,7 @@ void paccy_power_ups(game* g)
 	if (g->m->powerups[g->p->x][g->p->y] == 1)
 	{
 		g->m->powerups[g->p->x][g->p->y] = 0;
-		g->p->powered_up = 50;
+		g->p->powered_up = 25;
 		g->score += 5;
 	}
 }
@@ -95,6 +95,8 @@ void paccy_ghost(game* g)
 		else
 		{
 			g->lives -= 1;
+			Sleep(500);
+			g->p = gen_paccy(20, 13);
 			if (g->lives == 0) end_game(g);
 		}
 	}
@@ -105,6 +107,7 @@ void pass_time(game* g)
 	for (int i = 0; i < 4; i++)
 	{
 		if (g->ghosts[i].dead > 0) g->ghosts[i].dead--;
-		if (g->p->powered_up > 0) g->p->powered_up--;
 	}
+	if (g->p->powered_up > 0) g->p->powered_up--;
+	g->time++;
 }
